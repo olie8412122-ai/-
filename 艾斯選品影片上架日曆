@@ -1,0 +1,1356 @@
+          <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACE 艾斯選品 | 精緻工作台</title>
+    <!-- 引入 Google Fonts 提升質感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111111;         /* 曜石黑 */
+            --primary-light: #1f1f1f;   /* 深炭灰 */
+            --accent: #c5a880;          /* 靜謐香檳金 */
+            --accent-hover: #b3946b;    /* 深香檳金 */
+            --bg: #fbfbfa;              /* 溫暖柔白 */
+            --card-bg: #ffffff;         /* 純白 */
+            --border: #eceae4;          /* 暖調微灰 */
+            --text: #2c2a29;            /* 深茶色 */
+            --text-muted: #8c8a82;      /* 霧灰 */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 10px 30px rgba(28, 25, 23, 0.05);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
+            
+            /* 狀態色彩 */
+            --blue-glow: rgba(59, 130, 246, 0.6);
+            --red-glow: rgba(239, 68, 68, 0.6);
+            --orange-glow: rgba(249, 115, 22, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        header h1 span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        header p {
+            font-size: 0.85rem;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* 導覽列 */
+        nav {
+            display: flex;
+            justify-content: center;
+            background: var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            background: rgba(17, 17, 17, 0.95);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 18px 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 500;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: #ffffff;
+        }
+
+        .tab-btn:hover svg {
+            transform: translateY(-1px);
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 高級感日曆樣式 --- */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-controls button {
+            background: none;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .calendar-controls button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .calendar-selects {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calendar-dropdown {
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--primary);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .calendar-dropdown:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .calendar-dropdown-separator {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            table-layout: fixed;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 12px 0;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-cell {
+            background: var(--bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            height: 125px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .day-cell:hover {
+            border-color: var(--accent);
+            background: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(197, 168, 128, 0.12);
+        }
+
+        .day-number {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--primary);
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+
+        .day-number {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--primary);
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+
+        .day-content {
+            font-size: 0.78rem;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .event-link {
+            background: #fdfcf9;
+            border: 1px solid var(--accent);
+            border-left: 3px solid var(--accent);
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            margin-top: 6px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .event-link:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .plain-text-event {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 6px 10px;
+            background: #f3f3f1;
+            border-radius: 6px;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .empty-cell {
+            background: transparent;
+            border: none;
+            pointer-events: none;
+        }
+
+        /* 彈出視窗 (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-sub {
+            z-index: 1100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 650px; 
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-weight: 500;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .input-with-btn {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+            color: var(--text);
+            background-color: var(--bg);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--accent);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+        }
+
+        .input-textarea-expandable {
+            cursor: pointer;
+            background-color: #fcfbfa;
+            border-color: #e5dec9;
+            resize: none;
+            white-space: pre-wrap;
+        }
+
+        .btn-copy, .btn-expand {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-copy:hover, .btn-expand:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-save { background: var(--primary); color: white; }
+        .btn-save:hover { background: #333333; }
+        .btn-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: var(--border); }
+        .btn-delete { background: #faf5f5; color: #ef4444; margin-right: auto; border: 1px solid #fde8e8; }
+        .btn-delete:hover { background: #ef4444; color: white; }
+
+
+        /* --- 備忘錄庫樣式與搜尋列 --- */
+        .memo-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            outline: none;
+            font-size: 0.88rem;
+            background-color: var(--bg);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.1);
+        }
+
+        .filter-status-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active[data-status="all"] { background: var(--primary); color: white; border-color: var(--primary); }
+        .filter-btn.active[data-status="incomplete"] { background: #ef4444; color: white; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .filter-btn.active[data-status="pending"] { background: #f97316; color: white; border-color: #f97316; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2); }
+        .filter-btn.active[data-status="completed"] { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .memo-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border); 
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            min-height: 280px;
+            overflow: hidden;
+            cursor: pointer; 
+        }
+
+        .memo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 狀態效果 (平常靜態 / Hover時閃爍) */
+        .status-completed { border-color: #3b82f6; }
+        .status-completed:hover { animation: bluePulse 2s infinite ease-in-out; }
+
+        .status-incomplete { border-color: #ef4444; }
+        .status-incomplete:hover { animation: redPulse 2s infinite ease-in-out; }
+
+        .status-pending { border-color: #f97316; }
+        .status-pending:hover { animation: orangePulse 2s infinite ease-in-out; }
+
+        @keyframes bluePulse {
+            0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(59, 130, 246, 0.4); }
+            50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(59, 130, 246, 0.6); }
+            100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(59, 130, 246, 0.4); }
+        }
+
+        @keyframes redPulse {
+            0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(239, 68, 68, 0.6); }
+            100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        }
+
+        @keyframes orangePulse {
+            0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(249, 115, 22, 0.4); }
+            50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(249, 115, 22, 0.6); }
+            100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(249, 115, 22, 0.4); }
+        }
+
+        /* 狀態小標籤 */
+        .status-tag {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .tag-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .tag-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .tag-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+
+        .memo-product-title {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+
+        .memo-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .memo-url-container {
+            margin-bottom: 12px;
+        }
+
+        .memo-url {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            display: inline-block;
+            word-break: break-all;
+            font-weight: 500;
+            transition: color 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .memo-url:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        .memo-notes {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            white-space: pre-wrap; 
+            word-break: break-word;
+            flex-grow: 1;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+            margin-top: auto;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-card-schedule {
+            background: #ffffff;
+            border: 1px solid #e5dec9;
+            border-radius: 20px;
+            color: #b3946b;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-card-schedule:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-card-edit {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            transition: all 0.2s;
+        }
+        
+        .btn-card-edit:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-card-del {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .btn-card-del:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ACE <span>選品</span></h1>
+        <p>Premium Curation Workspace</p>
+    </header>
+
+    <nav>
+        <button class="tab-btn active" id="nav-calendar-btn" onclick="switchTab('calendar-page')">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+            選品行事曆
+        </button>
+        <button class="tab-btn" id="nav-memos-btn" onclick="switchTab('memos-page')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            備忘選品庫
+        </button>
+    </nav>
+
+    <div class="container">
+        
+        <!-- ================= 頁面一：日曆頁面 ================= -->
+        <div id="calendar-page" class="page active">
+            <div class="calendar-controls">
+                <button onclick="changeMonth(-1)">◀ PREV</button>
+                
+                <div class="calendar-selects">
+                    <select id="calendar-year-select" class="calendar-dropdown" onchange="onSelectChange()">
+                        <!-- 由 JS 動態生成 -->
+                    </select>
+                    <span class="calendar-dropdown-separator">.</span>
+                    <select id="calendar-month-select" class="calendar-dropdown" onchange="onSelectChange()">
+                        <!-- 由 JS 動態生成 -->
+                    </select>
+                </div>
+
+                <button onclick="changeMonth(1)">NEXT ▶</button>
+            </div>
+
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- 由 JS 動態生成 -->
+            </div>
+        </div>
+
+        <!-- ================= 頁面二：備忘錄頁面 ================= -->
+        <div id="memos-page" class="page">
+            <div class="memo-toolbar">
+                <div class="search-box-wrapper">
+                    <input type="text" id="memo-search-input" class="search-input" placeholder="🔍 輸入關鍵字搜尋商品或標題..." oninput="filterMemos()">
+                </div>
+                
+                <div class="filter-status-group">
+                    <button class="filter-btn active" data-status="all" onclick="setFilterStatus('all', this)">全部</button>
+                    <button class="filter-btn" data-status="incomplete" onclick="setFilterStatus('incomplete', this)">未完成 🔴</button>
+                    <button class="filter-btn" data-status="pending" onclick="setFilterStatus('pending', this)">待審核 🟠</button>
+                    <button class="filter-btn" data-status="completed" onclick="setFilterStatus('completed', this)">已完成 🔵</button>
+                </div>
+                
+                <button class="btn btn-save" onclick="openNewMemoModal()">＋ 新增選品備忘</button>
+            </div>
+            
+            <div class="grid-layout" id="memo-container">
+                <!-- 由 JS 動態生成 -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= 日曆編輯彈窗 (Modal) ================= -->
+    <div class="modal" id="calendar-modal">
+        <div class="modal-content">
+            <h3 id="modal-date-title">編輯日期資訊</h3>
+            <div class="form-group">
+                <label>商品標題 (選填 · 優先顯示在日曆上)</label>
+                <div class="input-with-btn">
+                    <input type="text" id="modal-product-title" placeholder="輸入商品名稱，如：寶寶監視器">
+                    <button class="btn-copy" onclick="copyInputValue('modal-product-title', this)">複製</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>行程/備註文字 (選填 · 支援多行與空行)</label>
+                <div class="input-with-btn">
+                    <textarea id="modal-event-text" class="input-textarea-expandable" rows="8" readonly placeholder="點此展開多行編輯大視窗..." onclick="openSubTextModal()"></textarea>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button class="btn-expand" onclick="openSubTextModal()" title="展開多行編輯" style="flex-grow: 1;">🔍 編輯</button>
+                        <button class="btn-copy" onclick="copyInputValue('modal-event-text', this)" style="flex-grow: 1;">複製</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>商品/活動超連結 URL (選填)</label>
+                <div class="input-with-btn">
+                    <input type="url" id="modal-event-url" placeholder="https://example.com">
+                    <button class="btn-copy" onclick="copyInputValue('modal-event-url', this)">複製</button>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-delete" onclick="deleteCalendarEvent()">清除</button>
+                <button class="btn btn-cancel" onclick="closeModal('calendar-modal')">取消</button>
+                <button class="btn btn-save" onclick="saveCalendarEvent()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 備忘文字多行詳細編輯二級彈窗 ================= -->
+    <div class="modal modal-sub" id="sub-text-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h3>編輯備註詳細文字</h3>
+            <div class="form-group">
+                <label>請輸入行程/備忘詳細內容 (保持原汁原味分段空行)</label>
+                <textarea id="sub-textarea-editor" rows="15" placeholder="貼上或在此輸入完整的備註文字內容..."></textarea>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-cancel" onclick="closeModal('sub-text-modal')">取消</button>
+                <button class="btn btn-save" onclick="saveSubTextEditor()">完成編輯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 備忘錄新增 & 編輯彈窗 (Modal) ================= -->
+    <div class="modal" id="memo-modal">
+        <div class="modal-content">
+            <h3 id="memo-modal-title">新增選品備忘</h3>
+            <input type="hidden" id="edit-memo-id">
+            
+            <div class="form-group">
+                <label>進度狀態分類</label>
+                <select id="new-memo-status">
+                    <option value="none">未分類 (預設外觀)</option>
+                    <option value="incomplete">未完成 </option>
+                    <option value="pending">待審核 </option>
+                    <option value="completed">已完成 </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>商品標題 (選填)</label>
+                <div class="input-with-btn">
+                    <input type="text" id="new-memo-product-title" placeholder="例如：東大門莫代爾寬褲">
+                    <button class="btn-copy" onclick="copyInputValue('new-memo-product-title', this)">複製</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>備忘主題</label>
+                <div class="input-with-btn">
+                    <input type="text" id="new-memo-title" placeholder="例如：服飾供應商 A">
+                    <button class="btn-copy" onclick="copyInputValue('new-memo-title', this)">複製</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>相關網址 (選填)</label>
+                <div class="input-with-btn">
+                    <input type="url" id="new-memo-url" placeholder="https://...">
+                    <button class="btn-copy" onclick="copyInputValue('new-memo-url', this)">複製</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>詳細備註 (支援分行分段)</label>
+                <div class="input-with-btn">
+                    <textarea id="new-memo-notes" rows="6" placeholder="填寫詳細聯絡資訊、價格或選品筆記..."></textarea>
+                    <button class="btn-copy" style="align-self: flex-start; padding: 12px 16px;" onclick="copyInputValue('new-memo-notes', this)">複製</button>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-cancel" onclick="closeModal('memo-modal')">取消</button>
+                <button class="btn btn-save" id="memo-save-btn" onclick="saveMemo()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 一鍵排程日期選擇視窗 ================= -->
+    <div class="modal" id="schedule-picker-modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h3>選擇排程日期</h3>
+            <input type="hidden" id="schedule-memo-id">
+            <div class="form-group">
+                <label>請選擇要將此商品貼上至行事曆的日期：</label>
+                <input type="date" id="schedule-target-date">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-cancel" onclick="closeModal('schedule-picker-modal')">取消</button>
+                <button class="btn btn-save" onclick="executeOneClickSchedule()">確定貼上並前往行事曆</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 核心資料狀態 ---
+        let currentDate = new Date();
+        let calendarData = JSON.parse(localStorage.getItem('ace_calendar')) || {};
+        let memoData = JSON.parse(localStorage.getItem('ace_memos')) || [];
+        let activeEditDate = null;
+        let currentFilterStatus = 'all'; 
+
+        // --- 頁籤切換邏輯 ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            if(tabId === 'calendar-page') {
+                document.getElementById('nav-calendar-btn').classList.add('active');
+                renderCalendar();
+            } else {
+                document.getElementById('nav-memos-btn').classList.add('active');
+                renderMemos();
+            }
+        }
+
+        // --- 彈跳視窗控制 ---
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // --- 備忘文字多行編輯器連動 ---
+        function openSubTextModal() {
+            const currentVal = document.getElementById('modal-event-text').value;
+            document.getElementById('sub-textarea-editor').value = currentVal;
+            openModal('sub-text-modal');
+        }
+
+        function saveSubTextEditor() {
+            const editedVal = document.getElementById('sub-textarea-editor').value;
+            document.getElementById('modal-event-text').value = editedVal;
+            closeModal('sub-text-modal');
+        }
+
+        // --- 複製文字共用函式 ---
+        function copyText(text, buttonElement) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = 'Copied!';
+                buttonElement.style.background = 'var(--accent)';
+                buttonElement.style.borderColor = 'var(--accent)';
+                buttonElement.style.color = 'white';
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.style.background = '';
+                    buttonElement.style.borderColor = '';
+                    buttonElement.style.color = '';
+                }, 1200);
+            }).catch(err => {
+                console.error('複製失敗:', err);
+            });
+        }
+
+        function copyInputValue(inputId, btn) {
+            const val = document.getElementById(inputId).value;
+            copyText(val, btn);
+        }
+
+
+        // ==========================================
+        // 🗓️ 日曆邏輯區
+        // ==========================================
+        function initCalendarSelects() {
+            const yearSelect = document.getElementById('calendar-year-select');
+            const monthSelect = document.getElementById('calendar-month-select');
+            
+            yearSelect.innerHTML = '';
+            monthSelect.innerHTML = '';
+            
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = y;
+                yearSelect.appendChild(opt);
+            }
+            
+            for (let m = 1; m <= 12; m++) {
+                const opt = document.createElement('option');
+                opt.value = m - 1; 
+                opt.innerText = String(m).padStart(2, '0');
+                monthSelect.appendChild(opt);
+            }
+        }
+
+        // 當下拉選單變更時
+        function onSelectChange() {
+            const selectedYear = parseInt(document.getElementById('calendar-year-select').value);
+            const selectedMonth = parseInt(document.getElementById('calendar-month-select').value);
+            
+            currentDate.setFullYear(selectedYear);
+            currentDate.setMonth(selectedMonth);
+            renderCalendar();
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            document.getElementById('calendar-year-select').value = year;
+            document.getElementById('calendar-month-select').value = month;
+
+            const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            weekdays.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'weekday';
+                header.innerText = day;
+                grid.appendChild(header);
+            });
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'day-cell empty-cell';
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                
+                const dayNum = document.createElement('div');
+                dayNum.className = 'day-number';
+                dayNum.innerText = String(day).padStart(2, '0');
+                cell.appendChild(dayNum);
+
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                const dayContent = document.createElement('div');
+                dayContent.className = 'day-content';
+
+                if (calendarData[dateStr]) {
+                    const event = calendarData[dateStr];
+                    const displayLabel = event.productTitle || event.text || "行程項目";
+                    
+                    const tooltipText = `【商品】${event.productTitle || '未命名商品'}\n【備註】\n${event.text || '無備註'}`;
+
+                    if (event.url) {
+                        const link = document.createElement('a');
+                        link.href = event.url;
+                        link.target = '_blank';
+                        link.className = 'event-link';
+                        link.innerText = displayLabel;
+                        link.title = tooltipText; 
+                        link.onclick = (e) => e.stopPropagation();
+                        dayContent.appendChild(link);
+                    } else {
+                        const textSpan = document.createElement('div');
+                        textSpan.className = 'plain-text-event';
+                        textSpan.innerText = displayLabel;
+                        textSpan.title = tooltipText; 
+                        dayContent.appendChild(textSpan);
+                    }
+                }
+                cell.appendChild(dayContent);
+
+                cell.onclick = () => openCalendarEdit(dateStr);
+                grid.appendChild(cell);
+            }
+        }
+
+        function openCalendarEdit(dateStr) {
+            activeEditDate = dateStr;
+            document.getElementById('modal-date-title').innerText = `${dateStr} Agenda`;
+            
+            const existing = calendarData[dateStr] || { productTitle: '', text: '', url: '' };
+            document.getElementById('modal-product-title').value = existing.productTitle || '';
+            document.getElementById('modal-event-text').value = existing.text || '';
+            document.getElementById('modal-event-url').value = existing.url || '';
+            
+            openModal('calendar-modal');
+        }
+
+        function saveCalendarEvent() {
+            const productTitle = document.getElementById('modal-product-title').value.trim();
+            const text = document.getElementById('modal-event-text').value; 
+            const url = document.getElementById('modal-event-url').value.trim();
+
+            if (!productTitle && !text && !url) {
+                delete calendarData[activeEditDate];
+            } else {
+                calendarData[activeEditDate] = { productTitle, text, url };
+            }
+
+            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
+            closeModal('calendar-modal');
+            renderCalendar();
+        }
+
+        function deleteCalendarEvent() {
+            if (calendarData[activeEditDate]) {
+                delete calendarData[activeEditDate];
+                localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
+            }
+            closeModal('calendar-modal');
+            renderCalendar();
+        }
+
+
+        // ==========================================
+        // 📝 備忘錄邏輯區
+        // ==========================================
+        function openNewMemoModal() {
+            document.getElementById('memo-modal-title').innerText = '新增選品備忘';
+            document.getElementById('edit-memo-id').value = '';
+            document.getElementById('new-memo-status').value = 'none';
+            document.getElementById('new-memo-product-title').value = '';
+            document.getElementById('new-memo-title').value = '';
+            document.getElementById('new-memo-url').value = '';
+            document.getElementById('new-memo-notes').value = '';
+            openModal('memo-modal');
+        }
+
+        function openEditMemoModal(id) {
+            const memo = memoData.find(m => m.id === id);
+            if (!memo) return;
+
+            document.getElementById('memo-modal-title').innerText = '修改選品備忘';
+            document.getElementById('edit-memo-id').value = memo.id;
+            document.getElementById('new-memo-status').value = memo.status || 'none';
+            document.getElementById('new-memo-product-title').value = memo.productTitle || '';
+            document.getElementById('new-memo-title').value = memo.title || '';
+            document.getElementById('new-memo-url').value = memo.url || '';
+            document.getElementById('new-memo-notes').value = memo.notes || '';
+            
+            openModal('memo-modal');
+        }
+
+        function saveMemo() {
+            const id = document.getElementById('edit-memo-id').value;
+            const status = document.getElementById('new-memo-status').value;
+            const productTitle = document.getElementById('new-memo-product-title').value.trim();
+            const title = document.getElementById('new-memo-title').value.trim() || '未命名選品備忘';
+            const url = document.getElementById('new-memo-url').value.trim();
+            const notes = document.getElementById('new-memo-notes').value; 
+
+            if (id) {
+                const memoIndex = memoData.findIndex(m => m.id === parseInt(id));
+                if (memoIndex !== -1) {
+                    memoData[memoIndex].status = status;
+                    memoData[memoIndex].productTitle = productTitle;
+                    memoData[memoIndex].title = title;
+                    memoData[memoIndex].url = url;
+                    memoData[memoIndex].notes = notes;
+                }
+            } else {
+                const newMemo = {
+                    id: Date.now(),
+                    status,
+                    productTitle,
+                    title,
+                    url,
+                    notes
+                };
+                memoData.push(newMemo);
+            }
+
+            localStorage.setItem('ace_memos', JSON.stringify(memoData));
+            closeModal('memo-modal');
+            renderMemos();
+        }
+
+        function deleteMemo(id) {
+            if (confirm('確定要移除此選品備忘錄嗎？')) {
+                memoData = memoData.filter(m => m.id !== id);
+                localStorage.setItem('ace_memos', JSON.stringify(memoData));
+                renderMemos();
+            }
+        }
+
+        function setFilterStatus(status, btnElement) {
+            currentFilterStatus = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            renderMemos();
+        }
+
+        function filterMemos() {
+            renderMemos();
+        }
+
+        function openSchedulePicker(id) {
+            document.getElementById('schedule-memo-id').value = id;
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('schedule-target-date').value = todayStr;
+            openModal('schedule-picker-modal');
+        }
+
+        function executeOneClickSchedule() {
+            const memoId = parseInt(document.getElementById('schedule-memo-id').value);
+            const targetDateStr = document.getElementById('schedule-target-date').value;
+
+            if(!targetDateStr) {
+                alert('請先選擇有效的日期！');
+                return;
+            }
+
+            const memo = memoData.find(m => m.id === memoId);
+            if(!memo) return;
+
+            calendarData[targetDateStr] = {
+                productTitle: memo.productTitle || '',
+                text: `【備忘標題】${memo.title}\n【詳細細節】\n${memo.notes || ''}`,
+                url: memo.url || ''
+            };
+
+            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
+            closeModal('schedule-picker-modal');
+
+            const parsedDate = new Date(targetDateStr);
+            currentDate = parsedDate; 
+
+            switchTab('calendar-page');
+        }
+
+        function renderMemos() {
+            const container = document.getElementById('memo-container');
+            container.innerHTML = '';
+
+            const searchQuery = document.getElementById('memo-search-input').value.toLowerCase().trim();
+
+            const filteredData = memoData.filter(memo => {
+                const matchStatus = (currentFilterStatus === 'all') || (memo.status === currentFilterStatus);
+                const pTitle = (memo.productTitle || '').toLowerCase();
+                const mTitle = (memo.title || '').toLowerCase();
+                const matchKeyword = searchQuery === '' || pTitle.includes(searchQuery) || mTitle.includes(searchQuery);
+                return matchStatus && matchKeyword;
+            });
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 80px 0; font-size: 0.9rem; letter-spacing: 1px;">沒有找到符合篩選條件的備忘紀錄。</p>`;
+                return;
+            }
+
+            filteredData.forEach(memo => {
+                const card = document.createElement('div');
+                
+                let statusClass = '';
+                let statusTagHtml = '';
+                if(memo.status === 'completed') {
+                    statusClass = ' status-completed';
+                    statusTagHtml = `<span class="status-tag tag-blue">已完成</span>`;
+                } else if(memo.status === 'incomplete') {
+                    statusClass = ' status-incomplete';
+                    statusTagHtml = `<span class="status-tag tag-red">未完成</span>`;
+                } else if(memo.status === 'pending') {
+                    statusClass = ' status-pending';
+                    statusTagHtml = `<span class="status-tag tag-orange">待審核</span>`;
+                }
+                
+                card.className = 'memo-card' + statusClass;
+                
+                // 點擊卡片任何空白處，預設直接進入編輯修改頁面
+                card.onclick = () => openEditMemoModal(memo.id);
+
+                const productTitleEl = document.createElement('div');
+                productTitleEl.className = 'memo-product-title';
+                productTitleEl.innerText = memo.productTitle ? `📦 ${memo.productTitle}` : '📦 未命名商品';
+
+                const titleEl = document.createElement('div');
+                titleEl.className = 'memo-title';
+                titleEl.innerText = memo.title;
+
+                const linkContainer = document.createElement('div');
+                linkContainer.className = 'memo-url-container';
+                if (memo.url) {
+                    const link = document.createElement('a');
+                    link.href = memo.url;
+                    link.target = '_blank';
+                    link.className = 'memo-url';
+                    link.innerText = memo.url;
+                    
+                    // 防止點擊外部連結時觸發卡片整體的編輯事件
+                    link.onclick = (e) => e.stopPropagation(); 
+                    
+                    linkContainer.appendChild(link);
+                } else {
+                    linkContainer.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">無相關網址</span>`;
+                }
+
+                const notesEl = document.createElement('div');
+                notesEl.className = 'memo-notes';
+                notesEl.innerText = memo.notes || '無備忘細節描述...';
+
+                const footer = document.createElement('div');
+                footer.className = 'card-footer';
+                
+                const leftGroup = document.createElement('div');
+                leftGroup.style.display = 'flex';
+                leftGroup.style.gap = '8px';
+
+                const scheduleBtn = document.createElement('button');
+                scheduleBtn.className = 'btn-card-schedule';
+                scheduleBtn.innerText = '📅 一鍵排程';
+                
+                // 防止排程按鈕觸發主體編輯
+                scheduleBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openSchedulePicker(memo.id);
+                };
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-card-edit';
+                editBtn.innerText = '編輯修改';
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openEditMemoModal(memo.id);
+                };
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-card-del';
+                delBtn.innerText = '移除';
+                
+                // 防止刪除按鈕觸發主體編輯
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteMemo(memo.id);
+                };
+
+                leftGroup.appendChild(scheduleBtn);
+                leftGroup.appendChild(editBtn);
+                leftGroup.appendChild(delBtn);
+
+                // ⭐【已修正】「💡 點擊空白處可修改」的小提示徽章已全數移除，介面更乾淨
+
+                footer.appendChild(leftGroup);
+
+                if(statusTagHtml) card.insertAdjacentHTML('beforeend', statusTagHtml);
+                card.appendChild(productTitleEl);
+                card.appendChild(titleEl);
+                card.appendChild(linkContainer);
+                card.appendChild(notesEl);
+                card.appendChild(footer);
+
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化
+        window.onload = function() {
+            initCalendarSelects();
+            renderCalendar();
+        };
+    </script>
+</body>
+</html>                                                                                                                                                                                                                      
