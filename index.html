@@ -1,9 +1,9 @@
-          <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACE 艾斯選品 | 精緻工作台</title>
+    <title>ACE 艾斯選品 | 雲端同步工作台</title>
     <!-- 引入 Google Fonts 提升質感 -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -70,6 +70,25 @@
             letter-spacing: 3px;
             color: var(--text-muted);
             text-transform: uppercase;
+        }
+
+        /* 雲端同步專用載入條 */
+        #cloud-loading-bar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), #ffffff, var(--accent));
+            background-size: 200% 100%;
+            animation: loadingMove 1.5s infinite linear;
+            z-index: 9999;
+        }
+
+        @keyframes loadingMove {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         /* 導覽列 */
@@ -247,14 +266,6 @@
             background: #ffffff;
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(197, 168, 128, 0.12);
-        }
-
-        .day-number {
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: var(--primary);
-            opacity: 0.8;
-            margin-bottom: 6px;
         }
 
         .day-number {
@@ -707,9 +718,12 @@
 </head>
 <body>
 
+    <!-- 雲端同步狀態載入條 -->
+    <div id="cloud-loading-bar"></div>
+
     <header>
         <h1>ACE <span>選品</span></h1>
-        <p>Premium Curation Workspace</p>
+        <p>Premium Curation Workspace (Cloud Sync)</p>
     </header>
 
     <nav>
@@ -891,12 +905,105 @@
     </div>
 
     <script>
+        // ==========================================
+        // 🚀【已成功綁定】雲端免認證配置參數區
+        // ==========================================
+        const SPREADSHEET_ID = "1kUVf0sScIYU1DJVoSM5OCIuAtytEARK_73aCUXmx6aE"; 
+        const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/1PgxD4beA5zX49h0XGiiAAy2lYEjGcM9sADTUIz2_-K8/formResponse"; 
+
+        const ENTRY_ACTION = "entry.657234052"; 
+        const ENTRY_CALENDAR = "entry.888660978"; 
+        const ENTRY_MEMO = "entry.1715202398"; 
+        // ==========================================
+
         // --- 核心資料狀態 ---
         let currentDate = new Date();
-        let calendarData = JSON.parse(localStorage.getItem('ace_calendar')) || {};
-        let memoData = JSON.parse(localStorage.getItem('ace_memos')) || [];
+        let calendarData = {};
+        let memoData = [];
         let activeEditDate = null;
         let currentFilterStatus = 'all'; 
+
+        // 控制頂端雲端進度條
+        function toggleLoading(show) {
+            document.getElementById('cloud-loading-bar').style.display = show ? 'block' : 'none';
+        }
+
+        // 🚀 免認證雲端讀取通道
+        async function loadCloudData() {
+            toggleLoading(true);
+            try {
+                // 讀取行事曆分頁
+                let calUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=calendar`;
+                let resCal = await fetch(calUrl);
+                let textCal = await resCal.text();
+                let jsonCal = JSON.parse(textCal.substring(47, textCal.length - 2));
+                
+                calendarData = {};
+                if(jsonCal.table && jsonCal.table.rows) {
+                    jsonCal.table.rows.forEach(row => {
+                        if(row.c[0]) {
+                            calendarData[row.c[0].v] = {
+                                productTitle: row.c[1] ? row.c[1].v : "",
+                                text: row.c[2] ? row.c[2].v : "",
+                                url: row.c[3] ? row.c[3].v : ""
+                            };
+                        }
+                    });
+                }
+
+                // 讀取備忘錄分頁
+                let memoUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=memos`;
+                let resMemo = await fetch(memoUrl);
+                let textMemo = await resMemo.text();
+                let jsonMemo = JSON.parse(textMemo.substring(47, textMemo.length - 2));
+                
+                memoData = [];
+                if(jsonMemo.table && jsonMemo.table.rows) {
+                    jsonMemo.table.rows.forEach(row => {
+                        memoData.push({
+                            id: row.c[0] ? row.c[0].v : Date.now(),
+                            status: row.c[1] ? row.c[1].v : "none",
+                            productTitle: row.c[2] ? row.c[2].v : "",
+                            title: row.c[3] ? row.c[3].v : "未命名備忘",
+                            url: row.c[4] ? row.c[4].v : "",
+                            notes: row.c[5] ? row.c[5].v : ""
+                        });
+                    });
+                }
+
+                renderCalendar();
+                renderMemos();
+            } catch(err) {
+                console.error("雲端載入失敗，改讀取本地快取備份:", err);
+                calendarData = JSON.parse(localStorage.getItem('ace_calendar')) || {};
+                memoData = JSON.parse(localStorage.getItem('ace_memos')) || [];
+                renderCalendar();
+                renderMemos();
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // 🚀 免認證雲端異步提交同步
+        function sendToGoogleForm(actionType) {
+            toggleLoading(true);
+            let formData = new FormData();
+            formData.append(ENTRY_ACTION, actionType);
+            formData.append(ENTRY_CALENDAR, JSON.stringify(calendarData));
+            formData.append(ENTRY_MEMO, JSON.stringify(memoData));
+
+            fetch(GOOGLE_FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            }).then(() => {
+                console.log("雲端備份同步請求已成功提交");
+                toggleLoading(false);
+            }).catch(err => {
+                console.error("雲端傳輸失敗:", err);
+                toggleLoading(false);
+            });
+        }
 
         // --- 頁籤切換邏輯 ---
         function switchTab(tabId) {
@@ -983,7 +1090,6 @@
             }
         }
 
-        // 當下拉選單變更時
         function onSelectChange() {
             const selectedYear = parseInt(document.getElementById('calendar-year-select').value);
             const selectedMonth = parseInt(document.getElementById('calendar-month-select').value);
@@ -1000,6 +1106,7 @@
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
+            if(!grid) return;
             grid.innerHTML = '';
 
             const year = currentDate.getFullYear();
@@ -1095,6 +1202,7 @@
             localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('calendar-modal');
             renderCalendar();
+            sendToGoogleForm("saveCalendar"); // 同步至雲端
         }
 
         function deleteCalendarEvent() {
@@ -1104,6 +1212,7 @@
             }
             closeModal('calendar-modal');
             renderCalendar();
+            sendToGoogleForm("saveCalendar"); // 同步至雲端
         }
 
 
@@ -1122,7 +1231,7 @@
         }
 
         function openEditMemoModal(id) {
-            const memo = memoData.find(m => m.id === id);
+            const memo = memoData.find(m => m.id == id);
             if (!memo) return;
 
             document.getElementById('memo-modal-title').innerText = '修改選品備忘';
@@ -1145,7 +1254,7 @@
             const notes = document.getElementById('new-memo-notes').value; 
 
             if (id) {
-                const memoIndex = memoData.findIndex(m => m.id === parseInt(id));
+                const memoIndex = memoData.findIndex(m => m.id == id);
                 if (memoIndex !== -1) {
                     memoData[memoIndex].status = status;
                     memoData[memoIndex].productTitle = productTitle;
@@ -1168,13 +1277,15 @@
             localStorage.setItem('ace_memos', JSON.stringify(memoData));
             closeModal('memo-modal');
             renderMemos();
+            sendToGoogleForm("saveMemos"); // 同步至雲端
         }
 
         function deleteMemo(id) {
             if (confirm('確定要移除此選品備忘錄嗎？')) {
-                memoData = memoData.filter(m => m.id !== id);
+                memoData = memoData.filter(m => m.id != id);
                 localStorage.setItem('ace_memos', JSON.stringify(memoData));
                 renderMemos();
+                sendToGoogleForm("saveMemos"); // 同步至雲端
             }
         }
 
@@ -1196,8 +1307,9 @@
             openModal('schedule-picker-modal');
         }
 
+        // 一鍵排程儲存與連動
         function executeOneClickSchedule() {
-            const memoId = parseInt(document.getElementById('schedule-memo-id').value);
+            const memoId = document.getElementById('schedule-memo-id').value;
             const targetDateStr = document.getElementById('schedule-target-date').value;
 
             if(!targetDateStr) {
@@ -1205,7 +1317,7 @@
                 return;
             }
 
-            const memo = memoData.find(m => m.id === memoId);
+            const memo = memoData.find(m => m.id == memoId);
             if(!memo) return;
 
             calendarData[targetDateStr] = {
@@ -1221,10 +1333,12 @@
             currentDate = parsedDate; 
 
             switchTab('calendar-page');
+            sendToGoogleForm("saveCalendar"); // 同步至雲端
         }
 
         function renderMemos() {
             const container = document.getElementById('memo-container');
+            if(!container) return;
             container.innerHTML = '';
 
             const searchQuery = document.getElementById('memo-search-input').value.toLowerCase().trim();
@@ -1331,8 +1445,6 @@
                 leftGroup.appendChild(editBtn);
                 leftGroup.appendChild(delBtn);
 
-                // ⭐【已修正】「💡 點擊空白處可修改」的小提示徽章已全數移除，介面更乾淨
-
                 footer.appendChild(leftGroup);
 
                 if(statusTagHtml) card.insertAdjacentHTML('beforeend', statusTagHtml);
@@ -1349,8 +1461,8 @@
         // 初始化
         window.onload = function() {
             initCalendarSelects();
-            renderCalendar();
+            loadCloudData(); // 開啟網頁時自動從試算表撈取最新雲端庫
         };
     </script>
 </body>
-</html>                                                                                                                                                                                                                      
+</html>
