@@ -34,7 +34,6 @@
         header h1 span { font-weight: 600; color: var(--accent); }
         header p { font-size: 0.85rem; margin-top: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; }
 
-        /* 雲端同步專用載入條 */
         #cloud-loading-bar { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(to right, var(--accent), #ffffff, var(--accent)); background-size: 200% 100%; animation: loadingMove 1.5s infinite linear; z-index: 9999; }
         @keyframes loadingMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -42,7 +41,6 @@
         .tab-btn { background: none; border: none; color: var(--text-muted); padding: 18px 30px; font-size: 0.9rem; cursor: pointer; transition: all 0.4s ease; font-weight: 500; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
         .tab-btn svg { width: 16px; height: 16px; fill: currentColor; transition: transform 0.3s; }
         .tab-btn:hover { color: #ffffff; }
-        .tab-btn:hover svg { transform: translateY(-1px); }
         .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
 
         .container { max-width: 1240px; margin: 40px auto; padding: 0 25px; }
@@ -101,7 +99,7 @@
         .filter-btn.active[data-status="pending"] { background: #f97316; color: white; border-color: #f97316; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2); }
         .filter-btn.active[data-status="completed"] { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px; }
-        .memo-card { background: var(--card-bg); border: 1.5px solid var(--border);  border-radius: 16px; padding: 25px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); min-height: 280px; overflow: hidden; cursor: pointer;  }
+        .memo-card { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); min-height: 280px; overflow: hidden; cursor: pointer; }
         .memo-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
         .status-completed { border-color: #3b82f6; }
         .status-completed:hover { animation: bluePulse 2s infinite ease-in-out; }
@@ -121,7 +119,7 @@
         .memo-url-container { margin-bottom: 12px; }
         .memo-url { font-size: 0.8rem; color: var(--accent); text-decoration: none; display: inline-block; word-break: break-all; font-weight: 500; transition: color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
         .memo-url:hover { color: var(--accent-hover); text-decoration: underline; }
-        .memo-notes { font-size: 0.88rem; color: var(--text-muted); white-space: pre-wrap;  word-break: break-word; flex-grow: 1; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .memo-notes { font-size: 0.88rem; color: var(--text-muted); white-space: pre-wrap; word-break: break-word; flex-grow: 1; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
         .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto; flex-wrap: wrap; gap: 8px; }
         .btn-card-schedule { background: #ffffff; border: 1px solid #e5dec9; border-radius: 20px; color: #b3946b; cursor: pointer; font-size: 0.75rem; font-weight: 500; padding: 4px 12px; transition: all 0.2s; }
         .btn-card-schedule:hover { background: var(--accent); color: white; border-color: var(--accent); }
@@ -129,11 +127,30 @@
         .btn-card-edit:hover { background: var(--primary); color: white; border-color: var(--primary); }
         .btn-card-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: opacity 0.2s; }
         .btn-card-del:hover { text-decoration: underline; opacity: 0.8; }
+
+        /* 右下角浮動專用導出鍵 */
+        .floating-sync-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--primary);
+            color: #ffffff;
+            border: 1px solid var(--accent);
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            z-index: 999;
+            transition: all 0.3s;
+        }
+        .floating-sync-btn:hover { background: var(--accent); transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <!-- 雲端同步狀態載入條 -->
     <div id="cloud-loading-bar"></div>
 
     <header>
@@ -153,8 +170,7 @@
     </nav>
 
     <div class="container">
-        
-        <!-- ================= 頁面一：日曆頁面 ================= -->
+        <!-- 行事曆頁面 -->
         <div id="calendar-page" class="page active">
             <div class="calendar-controls">
                 <button onclick="changeMonth(-1)">◀ PREV</button>
@@ -168,7 +184,7 @@
             <div class="calendar-grid" id="calendar-grid"></div>
         </div>
 
-        <!-- ================= 頁面二：備忘錄頁面 ================= -->
+        <!-- 備忘錄頁面 -->
         <div id="memos-page" class="page">
             <div class="memo-toolbar">
                 <div class="search-box-wrapper">
@@ -186,29 +202,48 @@
         </div>
     </div>
 
-    <!-- ================= 彈窗區 ================= -->
+    <!-- 📥 終極一鍵備份按鈕 -->
+    <button class="floating-sync-btn" onclick="exportDataBackup()">📥 備份儲存至雲端</button>
+
+    <!-- 備份代碼提示視窗 -->
+    <div class="modal" id="backup-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h3>📥 雲端備份儲存代碼</h3>
+            <div class="form-group">
+                <label>請複製下方這一串加密備份代碼：</label>
+                <textarea id="backup-code-output" rows="6" readonly onclick="this.select()"></textarea>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">💡 複製後，請直接打開你的 Google 試算表，把舊資料清空，直接貼在分頁的 <b>A1 儲存格</b> 就完成了！</p>
+            <div class="btn-group">
+                <button class="btn btn-save" id="btn-copy-backup" onclick="copyBackupText()">一鍵複製代碼</button>
+                <button class="btn btn-cancel" onclick="closeModal('backup-modal')">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彈窗組 -->
     <div class="modal" id="calendar-modal">
         <div class="modal-content">
             <h3 id="modal-date-title">編輯日期資訊</h3>
             <div class="form-group">
-                <label>商品標題 (選填 · 優先顯示在日曆上)</label>
+                <label>商品標題</label>
                 <div class="input-with-btn">
-                    <input type="text" id="modal-product-title" placeholder="輸入商品名稱，如：寶寶監視器">
+                    <input type="text" id="modal-product-title" placeholder="輸入商品名稱">
                     <button class="btn-copy" onclick="copyInputValue('modal-product-title', this)">複製</button>
                 </div>
             </div>
             <div class="form-group">
-                <label>行程/備註文字 (選填 · 支援多行與空行)</label>
+                <label>行程/備註文字</label>
                 <div class="input-with-btn">
                     <textarea id="modal-event-text" class="input-textarea-expandable" rows="8" readonly placeholder="點此展開多行編輯大視窗..." onclick="openSubTextModal()"></textarea>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
-                        <button class="btn-expand" onclick="openSubTextModal()" title="展開多行編輯" style="flex-grow: 1;">🔍 編輯</button>
-                        <button class="btn-copy" onclick="copyInputValue('modal-event-text', this)" style="flex-grow: 1;">複製</button>
+                        <button class="btn-expand" onclick="openSubTextModal()">🔍 編輯</button>
+                        <button class="btn-copy" onclick="copyInputValue('modal-event-text', this)">複製</button>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label>商品/活動超連結 URL (選填)</label>
+                <label>商品/活動超連結 URL</label>
                 <div class="input-with-btn">
                     <input type="url" id="modal-event-url" placeholder="https://example.com">
                     <button class="btn-copy" onclick="copyInputValue('modal-event-url', this)">複製</button>
@@ -226,8 +261,8 @@
         <div class="modal-content" style="max-width: 600px;">
             <h3>編輯備註詳細文字</h3>
             <div class="form-group">
-                <label>請輸入行程/備忘詳細內容 (保持原汁原味分段空行)</label>
-                <textarea id="sub-textarea-editor" rows="15" placeholder="貼上或在此輸入完整的備註文字內容..."></textarea>
+                <label>請輸入行程/備忘詳細內容</label>
+                <textarea id="sub-textarea-editor" rows="15"></textarea>
             </div>
             <div class="btn-group">
                 <button class="btn btn-cancel" onclick="closeModal('sub-text-modal')">取消</button>
@@ -244,13 +279,13 @@
                 <label>進度狀態分類</label>
                 <select id="new-memo-status">
                     <option value="none">未分類 (預設外觀)</option>
-                    <option value="incomplete">未完成 </option>
-                    <option value="pending">待審核 </option>
-                    <option value="completed">已完成 </option>
+                    <option value="incomplete">未完成</option>
+                    <option value="pending">待審核</option>
+                    <option value="completed">已完成</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>商品標題 (選填)</label>
+                <label>商品標題</label>
                 <div class="input-with-btn">
                     <input type="text" id="new-memo-product-title" placeholder="例如：東大門莫代爾寬褲">
                     <button class="btn-copy" onclick="copyInputValue('new-memo-product-title', this)">複製</button>
@@ -264,16 +299,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>相關網址 (選填)</label>
+                <label>相關網址</label>
                 <div class="input-with-btn">
                     <input type="url" id="new-memo-url" placeholder="https://...">
                     <button class="btn-copy" onclick="copyInputValue('new-memo-url', this)">複製</button>
                 </div>
             </div>
             <div class="form-group">
-                <label>詳細備註 (支援分行分段)</label>
+                <label>詳細備註</label>
                 <div class="input-with-btn">
-                    <textarea id="new-memo-notes" rows="6" placeholder="填寫詳細聯絡資訊、價格或選品筆記..."></textarea>
+                    <textarea id="new-memo-notes" rows="6"></textarea>
                     <button class="btn-copy" style="align-self: flex-start; padding: 12px 16px;" onclick="copyInputValue('new-memo-notes', this)">複製</button>
                 </div>
             </div>
@@ -301,15 +336,9 @@
 
     <script>
         // ==========================================
-        // 🚀 你的專屬雲端金鑰（已完美寫入）
+        // 🚀 填入你發布到網路的試算表 ID
         // ==========================================
         const SPREADSHEET_ID = "1kUVF0sScIYU1DJVoSM5OCIuAtytEARK_73aCUXmx6aE"; 
-        const GOOGLE_FORM_URL = "https://docs.google.com/forms/d/1PgxD4beA5zX49h0XGiiAAy2lYEjGcM9sADTUIz2_-K8/formResponse"; 
-
-        const ENTRY_ACTION = "entry.657234052"; 
-        const ENTRY_CALENDAR = "entry.888660978"; 
-        const ENTRY_MEMO = "entry.1715202398"; 
-        // ==========================================
 
         let currentDate = new Date();
         let calendarData = {};
@@ -321,36 +350,34 @@
             document.getElementById('cloud-loading-bar').style.display = show ? 'block' : 'none';
         }
 
-        // 🚀 核心更新：直接讀取「表單回應 1」的最後一行資料
+        // 🚀 免認證極速讀取：直接讀取你 Google 試算表發布的格子
         async function loadCloudData() {
             toggleLoading(true);
             try {
-                // 自動讀取表單收集到的最新資料
-                let url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=` + encodeURIComponent('表單回應 1');
-                let res = await fetch(url);
-                let text = await res.text();
-                let json = JSON.parse(text.substring(47, text.length - 2));
-
-                if(json.table && json.table.rows && json.table.rows.length > 0) {
-                    // 取得試算表中最新的一行（最後一次儲存的紀錄）
-                    let lastRow = json.table.rows[json.table.rows.length - 1];
-                    
-                    if(lastRow.c[2] && lastRow.c[2].v) {
-                        calendarData = JSON.parse(lastRow.c[2].v);
-                    } else {
-                        calendarData = {};
-                    }
-                    
-                    if(lastRow.c[3] && lastRow.c[3].v) {
-                        memoData = JSON.parse(lastRow.c[3].v);
-                    } else {
-                        memoData = [];
-                    }
+                // 1. 讀取行事曆
+                let calUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=calendar`;
+                let resCal = await fetch(calUrl);
+                let textCal = await resCal.text();
+                let jsonCal = JSON.parse(textCal.substring(47, textCal.length - 2));
+                if(jsonCal.table && jsonCal.table.rows && jsonCal.table.rows[0] && jsonCal.table.rows[0].c[0]) {
+                    let decoded = decodeURIComponent(atob(jsonCal.table.rows[0].c[0].v));
+                    calendarData = JSON.parse(decoded);
                 }
+
+                // 2. 讀取備忘錄
+                let memoUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=memos`;
+                let resMemo = await fetch(memoUrl);
+                let textMemo = await resMemo.text();
+                let jsonMemo = JSON.parse(textMemo.substring(47, textMemo.length - 2));
+                if(jsonMemo.table && jsonMemo.table.rows && jsonMemo.table.rows[0] && jsonMemo.table.rows[0].c[0]) {
+                    let decodedMemo = decodeURIComponent(atob(jsonMemo.table.rows[0].c[0].v));
+                    memoData = JSON.parse(decodedMemo);
+                }
+
                 renderCalendar();
                 renderMemos();
             } catch(err) {
-                console.error("從雲端讀取資料失敗，改讀取本地暫存:", err);
+                console.log("雲端無舊代碼或讀取失敗，載入本地快取:", err);
                 calendarData = JSON.parse(localStorage.getItem('ace_calendar')) || {};
                 memoData = JSON.parse(localStorage.getItem('ace_memos')) || [];
                 renderCalendar();
@@ -360,28 +387,25 @@
             }
         }
 
-        // 🚀 核心更新：無痛跨域背景提交資料給表單
-        function sendToGoogleForm(actionType) {
-            toggleLoading(true);
-            let formData = new FormData();
-            formData.append(ENTRY_ACTION, actionType);
-            formData.append(ENTRY_CALENDAR, JSON.stringify(calendarData));
-            formData.append(ENTRY_MEMO, JSON.stringify(memoData));
-
-            fetch(GOOGLE_FORM_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: formData
-            }).then(() => {
-                console.log("雲端同步儲存成功！");
-                toggleLoading(false);
-            }).catch(err => {
-                console.error("雲端同步失敗:", err);
-                toggleLoading(false);
-            });
+        // 📥 一鍵導出與加密備份
+        function exportDataBackup() {
+            let calString = btoa(encodeURIComponent(JSON.stringify(calendarData)));
+            let memoString = btoa(encodeURIComponent(JSON.stringify(memoData)));
+            
+            // 彈出對話框提示
+            document.getElementById('backup-code-output').value = `行事曆代碼：\n${calString}\n\n備忘錄代碼：\n${memoString}`;
+            openModal('backup-modal');
         }
 
-        // --- 頁籤與基礎控制 ---
+        function copyBackupText() {
+            let code = document.getElementById('backup-code-output').value;
+            navigator.clipboard.writeText(code);
+            let btn = document.getElementById('btn-copy-backup');
+            btn.innerText = "複製成功！";
+            setTimeout(() => { btn.innerText = "一鍵複製代碼"; }, 1500);
+        }
+
+        // --- 基礎介面控制邏輯 ---
         function switchTab(tabId) {
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -397,26 +421,20 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function openSubTextModal() {
-            document.getElementById('sub-textarea-editor').value = document.getElementById('modal-event-text').value;
-            openModal('sub-text-modal');
-        }
-        function saveSubTextEditor() {
-            document.getElementById('modal-event-text').value = document.getElementById('sub-textarea-editor').value;
-            closeModal('sub-text-modal');
-        }
+        function openSubTextModal() { document.getElementById('sub-textarea-editor').value = document.getElementById('modal-event-text').value; openModal('sub-text-modal'); }
+        function saveSubTextEditor() { document.getElementById('modal-event-text').value = document.getElementById('sub-textarea-editor').value; closeModal('sub-text-modal'); }
         function copyText(text, btn) {
             if (!text) return;
             navigator.clipboard.writeText(text).then(() => {
                 const orig = btn.innerText; btn.innerText = 'Copied!';
-                btn.style.background = 'var(--accent)'; btn.style.borderColor = 'var(--accent)'; btn.style.color = 'white';
-                setTimeout(() => { btn.innerText = orig; btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }, 1200);
+                btn.style.background = 'var(--accent)'; btn.style.color = 'white';
+                setTimeout(() => { btn.innerText = orig; btn.style.background = ''; btn.style.color = ''; }, 1200);
             });
         }
         function copyInputValue(inputId, btn) { copyText(document.getElementById(inputId).value, btn); }
 
         // ==========================================
-        // 🗓️ 日曆邏輯區
+        // 🗓️ 日曆邏輯
         // ==========================================
         function initCalendarSelects() {
             const yearSelect = document.getElementById('calendar-year-select');
@@ -444,7 +462,7 @@
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
-            grid.innerHTML = '';
+            if(!grid) return; grid.innerHTML = '';
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
 
@@ -509,21 +527,17 @@
             localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('calendar-modal');
             renderCalendar();
-            sendToGoogleForm("saveCalendar"); // 同步存入雲端
         }
 
         function deleteCalendarEvent() {
-            if (calendarData[activeEditDate]) {
-                delete calendarData[activeEditDate];
-                localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
-            }
+            if (calendarData[activeEditDate]) { delete calendarData[activeEditDate]; }
+            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('calendar-modal');
             renderCalendar();
-            sendToGoogleForm("saveCalendar");
         }
 
         // ==========================================
-        // 📝 備忘錄邏輯區
+        // 📝 備忘錄邏輯
         // ==========================================
         function openNewMemoModal() {
             document.getElementById('memo-modal-title').innerText = '新增選品備忘';
@@ -537,7 +551,7 @@
         }
 
         function openEditMemoModal(id) {
-            const memo = memoData.find(m => m.id === id);
+            const memo = memoData.find(m => m.id == id);
             if (!memo) return;
             document.getElementById('memo-modal-title').innerText = '修改選品備忘';
             document.getElementById('edit-memo-id').value = memo.id;
@@ -558,7 +572,7 @@
             const notes = document.getElementById('new-memo-notes').value; 
 
             if (id) {
-                const memoIndex = memoData.findIndex(m => m.id === parseInt(id));
+                const memoIndex = memoData.findIndex(m => m.id == id);
                 if (memoIndex !== -1) {
                     memoData[memoIndex].status = status;
                     memoData[memoIndex].productTitle = productTitle;
@@ -573,7 +587,6 @@
             localStorage.setItem('ace_memos', JSON.stringify(memoData));
             closeModal('memo-modal');
             renderMemos();
-            sendToGoogleForm("saveMemos"); // 同步存入雲端
         }
 
         function deleteMemo(id) {
@@ -581,7 +594,6 @@
                 memoData = memoData.filter(m => m.id !== id);
                 localStorage.setItem('ace_memos', JSON.stringify(memoData));
                 renderMemos();
-                sendToGoogleForm("saveMemos");
             }
         }
 
@@ -603,7 +615,7 @@
         function executeOneClickSchedule() {
             const memoId = parseInt(document.getElementById('schedule-memo-id').value);
             const targetDateStr = document.getElementById('schedule-target-date').value;
-            if(!targetDateStr) { alert('請先選擇有效的日期！'); return; }
+            if(!targetDateStr) return;
 
             const memo = memoData.find(m => m.id === memoId);
             if(!memo) return;
@@ -618,37 +630,32 @@
             closeModal('schedule-picker-modal');
             currentDate = new Date(targetDateStr); 
             switchTab('calendar-page');
-            sendToGoogleForm("saveCalendar");
         }
 
         function renderMemos() {
             const container = document.getElementById('memo-container');
-            container.innerHTML = '';
+            if(!container) return; container.innerHTML = '';
             const searchQuery = document.getElementById('memo-search-input').value.toLowerCase().trim();
 
             const filteredData = memoData.filter(memo => {
                 const matchStatus = (currentFilterStatus === 'all') || (memo.status === currentFilterStatus);
                 const pTitle = (memo.productTitle || '').toLowerCase();
                 const mTitle = (memo.title || '').toLowerCase();
-                const matchKeyword = searchQuery === '' || pTitle.includes(searchQuery) || mTitle.includes(searchQuery);
-                return matchStatus && matchKeyword;
+                return matchStatus && (searchQuery === '' || pTitle.includes(searchQuery) || mTitle.includes(searchQuery));
             });
 
             if (filteredData.length === 0) {
-                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 80px 0; font-size: 0.9rem; letter-spacing: 1px;">沒有找到符合篩選條件的備忘紀錄。</p>`;
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 80px 0; font-size: 0.9rem;">沒有找到符合篩選條件的備忘紀錄。</p>`;
                 return;
             }
 
             filteredData.forEach(memo => {
                 const card = document.createElement('div');
-                let statusClass = '';
-                let statusTagHtml = '';
-                if(memo.status === 'completed') { statusClass = ' status-completed'; statusTagHtml = `<span class="status-tag tag-blue">已完成</span>`; } 
-                else if(memo.status === 'incomplete') { statusClass = ' status-incomplete'; statusTagHtml = `<span class="status-tag tag-red">未完成</span>`; } 
-                else if(memo.status === 'pending') { statusClass = ' status-pending'; statusTagHtml = `<span class="status-tag tag-orange">待審核</span>`; }
-                
+                let statusClass = memo.status !== 'none' ? ` status-${memo.status}` : '';
                 card.className = 'memo-card' + statusClass;
                 card.onclick = () => openEditMemoModal(memo.id);
+
+                let statusTagHtml = memo.status !== 'none' ? `<span class="status-tag tag-${memo.status === 'completed' ? 'blue' : memo.status === 'incomplete' ? 'red' : 'orange'}">${memo.status === 'completed' ? '已完成' : memo.status === 'incomplete' ? '未完成' : '待審核'}</span>` : '';
 
                 const productTitleEl = document.createElement('div'); productTitleEl.className = 'memo-product-title'; productTitleEl.innerText = memo.productTitle ? `📦 ${memo.productTitle}` : '📦 未命名商品';
                 const titleEl = document.createElement('div'); titleEl.className = 'memo-title'; titleEl.innerText = memo.title;
@@ -656,9 +663,7 @@
                 const linkContainer = document.createElement('div'); linkContainer.className = 'memo-url-container';
                 if (memo.url) {
                     const link = document.createElement('a'); link.href = memo.url; link.target = '_blank'; link.className = 'memo-url'; link.innerText = memo.url; link.onclick = (e) => e.stopPropagation(); linkContainer.appendChild(link);
-                } else {
-                    linkContainer.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">無相關網址</span>`;
-                }
+                } else { linkContainer.innerHTML = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">無相關網址</span>`; }
 
                 const notesEl = document.createElement('div'); notesEl.className = 'memo-notes'; notesEl.innerText = memo.notes || '無備忘細節描述...';
                 const footer = document.createElement('div'); footer.className = 'card-footer';
@@ -681,10 +686,9 @@
             });
         }
 
-        // 初始化
         window.onload = function() {
             initCalendarSelects();
-            loadCloudData(); // 開啟網頁時自動抓取最新雲端備份
+            loadCloudData();
         };
     </script>
 </body>
