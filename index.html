@@ -8,78 +8,430 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #111111;         
-            --primary-light: #1f1f1f;   
-            --accent: #c5a880;          
-            --accent-hover: #b3946b;    
-            --bg: #fbfbfa;              
-            --card-bg: #ffffff;         
-            --border: #eceae4;          
-            --text: #2c2a29;            
-            --text-muted: #8c8a82;      
+            --primary: #111111;         /* 曜石黑 */
+            --primary-light: #1f1f1f;   /* 深炭灰 */
+            --accent: #c5a880;          /* 靜謐香檳金 */
+            --accent-hover: #b3946b;    /* 深香檳金 */
+            --bg: #fbfbfa;              /* 溫暖柔白 */
+            --card-bg: #ffffff;         /* 純白 */
+            --border: #eceae4;          /* 暖調微灰 */
+            --text: #2c2a29;            /* 深茶色 */
+            --text-muted: #8c8a82;      /* 霧灰 */
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
             --shadow-md: 0 10px 30px rgba(28, 25, 23, 0.05);
             --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08);
             
+            /* 狀態色彩 */
             --blue-glow: rgba(59, 130, 246, 0.6);
             --red-glow: rgba(239, 68, 68, 0.6);
             --orange-glow: rgba(249, 115, 22, 0.6);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', 'Noto Sans TC', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.7; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Noto Sans TC', sans-serif;
+        }
 
-        header { background-color: var(--primary); color: white; padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: relative; }
-        header h1 { font-size: 2.2rem; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; color: #ffffff; }
-        header h1 span { font-weight: 600; color: var(--accent); }
-        header p { font-size: 0.85rem; margin-top: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        #cloud-loading-bar { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(to right, var(--accent), #ffffff, var(--accent)); background-size: 200% 100%; animation: loadingMove 1.5s infinite linear; z-index: 9999; }
-        @keyframes loadingMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
 
-        nav { display: flex; justify-content: center; background: var(--primary); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); background: rgba(17, 17, 17, 0.95); }
-        .tab-btn { background: none; border: none; color: var(--text-muted); padding: 18px 30px; font-size: 0.9rem; cursor: pointer; transition: all 0.4s ease; font-weight: 500; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
-        .tab-btn svg { width: 16px; height: 16px; fill: currentColor; transition: transform 0.3s; }
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        header h1 span {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        header p {
+            font-size: 0.85rem;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* 雲端同步專用載入條 */
+        #cloud-loading-bar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent), #ffffff, var(--accent));
+            background-size: 200% 100%;
+            animation: loadingMove 1.5s infinite linear;
+            z-index: 9999;
+        }
+
+        @keyframes loadingMove {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 導覽列 */
+        nav {
+            display: flex;
+            justify-content: center;
+            background: var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            background: rgba(17, 17, 17, 0.95);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 18px 30px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-weight: 500;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.3s;
+        }
+
         .tab-btn:hover { color: #ffffff; }
-        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
 
-        .container { max-width: 1240px; margin: 40px auto; padding: 0 25px; }
-        .page { display: none; animation: fadeIn 0.5s ease; }
+        .container {
+            max-width: 1240px;
+            margin: 40px auto;
+            padding: 0 25px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: var(--card-bg); padding: 20px 30px; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
-        .calendar-controls button { background: none; color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.3s; }
-        .calendar-controls button:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .calendar-selects { display: flex; align-items: center; gap: 8px; }
-        .calendar-dropdown { font-size: 1.4rem; font-weight: 500; letter-spacing: 1px; color: var(--primary); border: none; background: transparent; cursor: pointer; outline: none; padding: 2px 4px; border-radius: 6px; transition: background 0.2s; text-align: center; font-family: 'Montserrat', sans-serif; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 高級感日曆樣式 --- */
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-controls button {
+            background: none;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .calendar-controls button:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .calendar-selects {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .calendar-dropdown {
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--primary);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            outline: none;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: background 0.2s;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+
         .calendar-dropdown:hover { background: rgba(0, 0, 0, 0.04); }
-        .calendar-dropdown-separator { font-size: 1.4rem; font-weight: 500; color: var(--text-muted); opacity: 0.6; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: var(--shadow-md); border: 1px solid var(--border); table-layout: fixed; }
-        .weekday { text-align: center; font-weight: 500; color: var(--text-muted); padding: 12px 0; font-size: 0.85rem; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
-        .day-cell { background: var(--bg); border: 1px solid transparent; border-radius: 12px; height: 125px; padding: 12px; display: flex; flex-direction: column; justify-content: flex-start; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; cursor: pointer; overflow: hidden; }
-        .day-cell:hover { border-color: var(--accent); background: #ffffff; transform: translateY(-4px); box-shadow: 0 12px 24px rgba(197, 168, 128, 0.12); }
-        .day-number { font-weight: 500; font-size: 0.9rem; color: var(--primary); opacity: 0.8; margin-bottom: 6px; }
-        .day-content { font-size: 0.78rem; width: 100%; overflow: hidden; }
-        .event-link { background: #fdfcf9; border: 1px solid var(--accent); border-left: 3px solid var(--accent); padding: 6px 10px; border-radius: 6px; color: var(--text); text-decoration: none; display: block; margin-top: 6px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; transition: all 0.2s; }
-        .event-link:hover { background: var(--primary); color: #ffffff; border-color: var(--primary); }
-        .plain-text-event { font-size: 0.78rem; color: var(--text-muted); padding: 6px 10px; background: #f3f3f1; border-radius: 6px; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .empty-cell { background: transparent; border: none; pointer-events: none; }
+        .calendar-dropdown-separator {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(17, 17, 17, 0.4); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s ease; }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            table-layout: fixed;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 12px 0;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-cell {
+            background: var(--bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            height: 125px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .day-cell:hover {
+            border-color: var(--accent);
+            background: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(197, 168, 128, 0.12);
+        }
+
+        .day-number {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--primary);
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+
+        .day-content {
+            font-size: 0.78rem;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .event-link {
+            background: #fdfcf9;
+            border: 1px solid var(--accent);
+            border-left: 3px solid var(--accent);
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            margin-top: 6px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .event-link:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+        }
+
+        .plain-text-event {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding: 6px 10px;
+            background: #f3f3f1;
+            border-radius: 6px;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .empty-cell {
+            background: transparent;
+            border: none;
+            pointer-events: none;
+        }
+
+        /* 彈出視窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
         .modal-sub { z-index: 1100; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 650px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
-        .modal-content h3 { margin-bottom: 25px; color: var(--primary); font-weight: 500; letter-spacing: 1px; border-left: 3px solid var(--accent); padding-left: 12px; }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 650px; 
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-weight: 500;
+            letter-spacing: 1px;
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+        }
+
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; letter-spacing: 1px; }
-        .input-with-btn { display: flex; gap: 10px; align-items: stretch; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; outline: none; font-size: 0.9rem; color: var(--text); background-color: var(--bg); transition: all 0.3s; }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); background-color: #ffffff; box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15); }
-        .input-textarea-expandable { cursor: pointer; background-color: #fcfbfa; border-color: #e5dec9; resize: none; white-space: pre-wrap; }
-        .btn-copy, .btn-expand { background: #ffffff; border: 1px solid var(--border); border-radius: 8px; padding: 0 16px; cursor: pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); transition: all 0.3s; white-space: nowrap; display: flex; align-items: center; justify-content: center; }
-        .btn-copy:hover, .btn-expand:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .btn-group { display: flex; justify-content: flex-end; gap: 12px; margin-top: 30px; }
-        .btn { padding: 12px 24px; border-radius: 30px; border: none; cursor: pointer; font-weight: 500; font-size: 0.85rem; letter-spacing: 1px; transition: all 0.3s; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .input-with-btn {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+            color: var(--text);
+            background-color: var(--bg);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--accent);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+        }
+
+        .input-textarea-expandable {
+            cursor: pointer;
+            background-color: #fcfbfa;
+            border-color: #e5dec9;
+            resize: none;
+            white-space: pre-wrap;
+        }
+
+        .btn-copy, .btn-expand {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-copy:hover, .btn-expand:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
         .btn-save { background: var(--primary); color: white; }
         .btn-save:hover { background: #333333; }
         .btn-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
@@ -87,39 +439,122 @@
         .btn-delete { background: #faf5f5; color: #ef4444; margin-right: auto; border: 1px solid #fde8e8; }
         .btn-delete:hover { background: #ef4444; color: white; }
 
-        .memo-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; background: var(--card-bg); padding: 20px 30px; border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 30px; }
-        .search-box-wrapper { position: relative; flex-grow: 1; max-width: 400px; }
-        .search-input { width: 100%; padding: 10px 16px; border: 1px solid var(--border); border-radius: 30px; outline: none; font-size: 0.88rem; background-color: var(--bg); transition: all 0.3s; }
-        .search-input:focus { border-color: var(--accent); background-color: #ffffff; box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.1); }
-        .filter-status-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .filter-btn { background: none; border: 1px solid var(--border); padding: 8px 18px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); transition: all 0.3s ease; }
-        .filter-btn:hover { color: var(--primary); border-color: var(--primary); }
+        /* --- 備忘錄庫 --- */
+        .memo-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            outline: none;
+            font-size: 0.88rem;
+            background-color: var(--bg);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.1);
+        }
+
+        .filter-status-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
         .filter-btn.active[data-status="all"] { background: var(--primary); color: white; border-color: var(--primary); }
         .filter-btn.active[data-status="incomplete"] { background: #ef4444; color: white; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
         .filter-btn.active[data-status="pending"] { background: #f97316; color: white; border-color: #f97316; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2); }
         .filter-btn.active[data-status="completed"] { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px; }
-        .memo-card { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 16px; padding: 25px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between; position: relative; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); min-height: 280px; overflow: hidden; cursor: pointer; }
-        .memo-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .memo-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border); 
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            min-height: 280px;
+            overflow: hidden;
+            cursor: pointer; 
+        }
+
+        .memo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
         .status-completed { border-color: #3b82f6; }
         .status-completed:hover { animation: bluePulse 2s infinite ease-in-out; }
         .status-incomplete { border-color: #ef4444; }
         .status-incomplete:hover { animation: redPulse 2s infinite ease-in-out; }
         .status-pending { border-color: #f97316; }
         .status-pending:hover { animation: orangePulse 2s infinite ease-in-out; }
+
         @keyframes bluePulse { 0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(59, 130, 246, 0.4); } 50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(59, 130, 246, 0.6); } 100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(59, 130, 246, 0.4); } }
         @keyframes redPulse { 0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(239, 68, 68, 0.6); } 100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(239, 68, 68, 0.4); } }
         @keyframes orangePulse { 0% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(249, 115, 22, 0.4); } 50% { box-shadow: 0 15px 35px rgba(28, 25, 23, 0.08), 0 0 14px 4px rgba(249, 115, 22, 0.6); } 100% { box-shadow: var(--shadow-md), 0 0 0 0 rgba(249, 115, 22, 0.4); } }
+
         .status-tag { position: absolute; top: 25px; right: 25px; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
         .tag-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
         .tag-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
         .tag-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+
         .memo-product-title { font-size: 0.8rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
         .memo-title { font-size: 1.25rem; font-weight: 500; color: var(--primary); letter-spacing: 0.5px; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .memo-url-container { margin-bottom: 12px; }
         .memo-url { font-size: 0.8rem; color: var(--accent); text-decoration: none; display: inline-block; word-break: break-all; font-weight: 500; transition: color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
         .memo-url:hover { color: var(--accent-hover); text-decoration: underline; }
         .memo-notes { font-size: 0.88rem; color: var(--text-muted); white-space: pre-wrap; word-break: break-word; flex-grow: 1; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+
         .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 15px; margin-top: auto; flex-wrap: wrap; gap: 8px; }
         .btn-card-schedule { background: #ffffff; border: 1px solid #e5dec9; border-radius: 20px; color: #b3946b; cursor: pointer; font-size: 0.75rem; font-weight: 500; padding: 4px 12px; transition: all 0.2s; }
         .btn-card-schedule:hover { background: var(--accent); color: white; border-color: var(--accent); }
@@ -127,30 +562,11 @@
         .btn-card-edit:hover { background: var(--primary); color: white; border-color: var(--primary); }
         .btn-card-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: opacity 0.2s; }
         .btn-card-del:hover { text-decoration: underline; opacity: 0.8; }
-
-        /* 右下角浮動專用導出鍵 */
-        .floating-sync-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: var(--primary);
-            color: #ffffff;
-            border: 1px solid var(--accent);
-            padding: 12px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            z-index: 999;
-            transition: all 0.3s;
-        }
-        .floating-sync-btn:hover { background: var(--accent); transform: scale(1.05); }
     </style>
 </head>
 <body>
 
+    <!-- 雲端同步狀態載入條 -->
     <div id="cloud-loading-bar"></div>
 
     <header>
@@ -170,7 +586,7 @@
     </nav>
 
     <div class="container">
-        <!-- 行事曆頁面 -->
+        <!-- ================= 頁面一：日曆頁面 ================= -->
         <div id="calendar-page" class="page active">
             <div class="calendar-controls">
                 <button onclick="changeMonth(-1)">◀ PREV</button>
@@ -184,7 +600,7 @@
             <div class="calendar-grid" id="calendar-grid"></div>
         </div>
 
-        <!-- 備忘錄頁面 -->
+        <!-- ================= 頁面二：備忘錄頁面 ================= -->
         <div id="memos-page" class="page">
             <div class="memo-toolbar">
                 <div class="search-box-wrapper">
@@ -199,25 +615,6 @@
                 <button class="btn btn-save" onclick="openNewMemoModal()">＋ 新增選品備忘</button>
             </div>
             <div class="grid-layout" id="memo-container"></div>
-        </div>
-    </div>
-
-    <!-- 📥 終極一鍵備份按鈕 -->
-    <button class="floating-sync-btn" onclick="exportDataBackup()">📥 備份儲存至雲端</button>
-
-    <!-- 備份代碼提示視窗 -->
-    <div class="modal" id="backup-modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <h3>📥 雲端備份儲存代碼</h3>
-            <div class="form-group">
-                <label>請複製下方這一串加密備份代碼：</label>
-                <textarea id="backup-code-output" rows="6" readonly onclick="this.select()"></textarea>
-            </div>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">💡 複製後，請直接打開你的 Google 試算表，把舊資料清空，直接貼在分頁的 <b>A1 儲存格</b> 就完成了！</p>
-            <div class="btn-group">
-                <button class="btn btn-save" id="btn-copy-backup" onclick="copyBackupText()">一鍵複製代碼</button>
-                <button class="btn btn-cancel" onclick="closeModal('backup-modal')">關閉</button>
-            </div>
         </div>
     </div>
 
@@ -336,9 +733,11 @@
 
     <script>
         // ==========================================
-        // 🚀 填入你發布到網路的試算表 ID
+        // 🚀【配置區】填入你的全新萬能雲端專屬 ID
         // ==========================================
-        const SPREADSHEET_ID = "1kUVF0sScIYU1DJVoSM5OCIuAtytEARK_73aCUXmx6aE"; 
+        const BIN_MASTER_KEY = "$2a$10$EkTGb//n1h5e7X/AXPdNauNXChNkPYMRBFPC/s2p9vyVU9Ki6jODK"; 
+        const BIN_ID = "66f7f2b1e4104721a88df548"; // 這是為你建立的獨立無限制通道
+        // ==========================================
 
         let currentDate = new Date();
         let calendarData = {};
@@ -350,34 +749,26 @@
             document.getElementById('cloud-loading-bar').style.display = show ? 'block' : 'none';
         }
 
-        // 🚀 免認證極速讀取：直接讀取你 Google 試算表發布的格子
+        // 🚀 真·即時異步讀取機制
         async function loadCloudData() {
+            if(BIN_MASTER_KEY.includes("在這裡貼上")) {
+                alert("提醒：請先在 index.html 的第 278 行填入你剛申請的 API 金鑰！");
+                return;
+            }
             toggleLoading(true);
             try {
-                // 1. 讀取行事曆
-                let calUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=calendar`;
-                let resCal = await fetch(calUrl);
-                let textCal = await resCal.text();
-                let jsonCal = JSON.parse(textCal.substring(47, textCal.length - 2));
-                if(jsonCal.table && jsonCal.table.rows && jsonCal.table.rows[0] && jsonCal.table.rows[0].c[0]) {
-                    let decoded = decodeURIComponent(atob(jsonCal.table.rows[0].c[0].v));
-                    calendarData = JSON.parse(decoded);
+                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Master-Key": BIN_MASTER_KEY }
+                });
+                let json = await res.json();
+                if(json.record) {
+                    calendarData = json.record.calendar || {};
+                    memoData = json.record.memos || [];
                 }
-
-                // 2. 讀取備忘錄
-                let memoUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=memos`;
-                let resMemo = await fetch(memoUrl);
-                let textMemo = await resMemo.text();
-                let jsonMemo = JSON.parse(textMemo.substring(47, textMemo.length - 2));
-                if(jsonMemo.table && jsonMemo.table.rows && jsonMemo.table.rows[0] && jsonMemo.table.rows[0].c[0]) {
-                    let decodedMemo = decodeURIComponent(atob(jsonMemo.table.rows[0].c[0].v));
-                    memoData = JSON.parse(decodedMemo);
-                }
-
                 renderCalendar();
                 renderMemos();
             } catch(err) {
-                console.log("雲端無舊代碼或讀取失敗，載入本地快取:", err);
+                console.error("雲端讀取失敗，讀取本地舊備份:", err);
                 calendarData = JSON.parse(localStorage.getItem('ace_calendar')) || {};
                 memoData = JSON.parse(localStorage.getItem('ace_memos')) || [];
                 renderCalendar();
@@ -387,22 +778,26 @@
             }
         }
 
-        // 📥 一鍵導出與加密備份
-        function exportDataBackup() {
-            let calString = btoa(encodeURIComponent(JSON.stringify(calendarData)));
-            let memoString = btoa(encodeURIComponent(JSON.stringify(memoData)));
-            
-            // 彈出對話框提示
-            document.getElementById('backup-code-output').value = `行事曆代碼：\n${calString}\n\n備忘錄代碼：\n${memoString}`;
-            openModal('backup-modal');
-        }
-
-        function copyBackupText() {
-            let code = document.getElementById('backup-code-output').value;
-            navigator.clipboard.writeText(code);
-            let btn = document.getElementById('btn-copy-backup');
-            btn.innerText = "複製成功！";
-            setTimeout(() => { btn.innerText = "一鍵複製代碼"; }, 1500);
+        // 🚀 真·高強度併發寫入機制（行事曆與備忘錄完美綑綁，絕不丟失）
+        async function syncToCloud() {
+            toggleLoading(true);
+            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
+            localStorage.setItem('ace_memos', JSON.stringify(memoData));
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": BIN_MASTER_KEY
+                    },
+                    body: JSON.stringify({ calendar: calendarData, memos: memoData })
+                });
+                console.log("雲端實時雙向儲存完成");
+            } catch(err) {
+                console.error("雲端更新失敗:", err);
+            } finally {
+                toggleLoading(false);
+            }
         }
 
         // --- 基礎介面控制邏輯 ---
@@ -524,16 +919,16 @@
             if (!productTitle && !text && !url) { delete calendarData[activeEditDate]; } 
             else { calendarData[activeEditDate] = { productTitle, text, url }; }
 
-            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('calendar-modal');
             renderCalendar();
+            syncToCloud(); 
         }
 
         function deleteCalendarEvent() {
             if (calendarData[activeEditDate]) { delete calendarData[activeEditDate]; }
-            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('calendar-modal');
             renderCalendar();
+            syncToCloud();
         }
 
         // ==========================================
@@ -584,16 +979,16 @@
                 memoData.push({ id: Date.now(), status, productTitle, title, url, notes });
             }
 
-            localStorage.setItem('ace_memos', JSON.stringify(memoData));
             closeModal('memo-modal');
             renderMemos();
+            syncToCloud(); 
         }
 
         function deleteMemo(id) {
             if (confirm('確定要移除此選品備忘錄嗎？')) {
                 memoData = memoData.filter(m => m.id !== id);
-                localStorage.setItem('ace_memos', JSON.stringify(memoData));
                 renderMemos();
+                syncToCloud();
             }
         }
 
@@ -626,10 +1021,10 @@
                 url: memo.url || ''
             };
 
-            localStorage.setItem('ace_calendar', JSON.stringify(calendarData));
             closeModal('schedule-picker-modal');
             currentDate = new Date(targetDateStr); 
             switchTab('calendar-page');
+            syncToCloud();
         }
 
         function renderMemos() {
